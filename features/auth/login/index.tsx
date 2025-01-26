@@ -6,11 +6,11 @@ import { Colors } from "@/constants";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link } from "expo-router";
 
-export default function RegisterScreen() {
+export default function LoginScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Sign Up</Text>
+        <Text style={styles.title}>Sign In</Text>
       </View>
 
       <View style={styles.form}>
@@ -26,18 +26,14 @@ export default function RegisterScreen() {
           secureTextEntry={true}
           placeholderTextColor="#aaa"
         />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Repeat Password"
-          secureTextEntry={true}
-          placeholderTextColor="#aaa"
-        />
-        <Button title="Sign Up" color={Colors.lightBlue.background} />
-        <Link style={styles.linkText} href="/">Already have an account? Sign in!</Link>
+        <Button title="Sign In" color={Colors.lightBlue.background} />
+        <Link style={styles.linkText} href="/sign-up">
+          Create an account!
+        </Link>
       </View>
 
       <View style={styles.socialSection}>
-        <Text style={styles.socialText}>Sign Up with social account</Text>
+        <Text style={styles.socialText}>Sign In with social account</Text>
         <View style={styles.socialButtons}>
           <TouchableOpacity style={styles.socialButton}>
             <FontAwesome size={28} name="facebook" />
