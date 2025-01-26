@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
-import { FlatList, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import PokemonCard from "./components/PokemonCard";
 import PokemonModal from "./components/PokemonModal";
+import { Pokemon, PokemonDetails } from "./models";
+import { getPokemonDetailsFromApi, getPokemonsFromApi } from "./api/pokemonApi.service";
 
 const pokemonsFavorites = [
   { name: "Pikachu", image: "pikachu.png" },
@@ -21,24 +23,61 @@ const pokemonsNotFavorites = [
 ];
 
 export default function HomeScreen() {
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [pokemonDetails, setPokemonDetails] = useState<PokemonDetails>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showPokemonModal, setShowPokemonModal] = useState(false);
+
+  const handleGetPokemonDetails = async (url:string) => {
+    try {
+      const details = await getPokemonDetailsFromApi(url);
+      setPokemonDetails(details); 
+      setShowPokemonModal(true);
+    } catch (error) {
+      console.error("Error to getPokemonDetailsFromApi:", error);
+    }
+  };
+  const handleCloseModal = () => {
+    setShowPokemonModal(false);
+  };
+
+  useEffect(() => {
+    const fetchPokemons = async () => {
+      try {
+        const fetchedPokemons = await getPokemonsFromApi();
+        setPokemons(fetchedPokemons);
+      } catch (error) {
+        console.error("Failed to fetch pokemons:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPokemons();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.containerNotFavorites}>
         <Text style={styles.title}>Pokemons Not Favorites</Text>
-        <FlatList
-          data={pokemonsNotFavorites}
-          renderItem={({ item }) => (
-            <PokemonCard
-              name={item.name}
-              image={
-                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/1.png"
-              }
-            />
-          )}
-          keyExtractor={(item, index) => index.toString()}
-          showsVerticalScrollIndicator={false}
-        />
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <FlatList
+            data={pokemons}
+            renderItem={({ item }) => (
+              <PokemonCard
+                name={item.name}
+                url={
+                  item.url
+                }
+                onPokemonSelect={handleGetPokemonDetails}
+              />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </View>
       <View style={styles.containerFavorites}>
         <Text style={styles.title}>Pokemons Favorites</Text>
@@ -47,9 +86,10 @@ export default function HomeScreen() {
           renderItem={({ item }) => (
             <PokemonCard
               name={item.name}
-              image={
-                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/6.png"
+              url={
+                item.url
               }
+              onPokemonSelect={handleGetPokemonDetails}
             />
           )}
           keyExtractor={(item, index) => index.toString()}
@@ -57,7 +97,7 @@ export default function HomeScreen() {
           horizontal
         />
       </View>
-      <PokemonModal visible = {showPokemonModal}/>
+      {pokemonDetails && <PokemonModal visible={showPokemonModal} modalData = {pokemonDetails} onClose = {handleCloseModal}/>}
     </SafeAreaView>
   );
 }

@@ -1,42 +1,23 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { styles } from "./styles";
+import { getPokemonIdFromURL } from "../../utils/getPokemonIdFromURL.utility";
+import { Props } from "./types.component";
 
-export default function PokemonCard({ name, image }) {
+export default function PokemonCard({ name, url, onPokemonSelect }: Props) {
+  const pokemonID = getPokemonIdFromURL(url) || 1;
+
   return (
     <View style={styles.card}>
       <Image
-        source={{ uri: image }} // Asegúrate de usar URLs o imágenes locales correctamente
+        source={{
+          uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemonID}.png`,
+        }} // Asegúrate de usar URLs o imágenes locales correctamente
         style={styles.image}
       />
-      <Text style={styles.name}>{name}</Text>
+      <TouchableOpacity onPress={() => onPokemonSelect(url)}>
+        <Text style={styles.name}>{name}</Text>
+      </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 10,
-    marginHorizontal: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  image: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#333",
-  },
-});
