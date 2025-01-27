@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  Alert,
   Button,
   Text,
   TextInput,
@@ -12,8 +11,7 @@ import { styles } from "./styles";
 import { Colors } from "@/constants";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, useRouter } from "expo-router";
-import { initialUserCredentials, UserCredentials } from "../types";
-import { registerUser } from "../firebase/auth";
+import { initialUserCredentials } from "../types";
 import { Formik } from "formik";
 import { validationSchema } from "./validationSchema";
 import useSignUp from "../hooks/useSignUp";
