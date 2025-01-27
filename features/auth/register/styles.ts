@@ -65,4 +65,7 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
   },
+  errorText: {
+    color: "#C70039"
+  }
 });

@@ -1,12 +1,6 @@
-import HomeScreen from '@/features/home'
-import React, { useState } from 'react'
-import { Text, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import HomeScreen from "@/features/home";
+import React from "react";
 
-
-export default function HomePage() {
-   
-  return (
-    <HomeScreen />
-  )
+export default function Page() {
+  return <HomeScreen />;
 }
