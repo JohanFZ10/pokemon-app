@@ -16,22 +16,11 @@ import { initialUserCredentials, UserCredentials } from "../types";
 import { registerUser } from "../firebase/auth";
 import { Formik } from "formik";
 import { validationSchema } from "./validationSchema";
+import useSignUp from "../hooks/useSignUp";
 
 export default function RegisterScreen() {
-  const router = useRouter();
+  const { handleRegister } = useSignUp();
 
-  const handleRegister = async (userCredentials: UserCredentials) => {
-    try {
-      const user = await registerUser(
-        userCredentials.email,
-        userCredentials.password
-      );
-      Alert.alert('Register Successfully!', 'You have successfully sign up.');
-      router.push("/(tabs)/profile");
-    } catch (error: any) {
-      Alert.alert(error.message);
-    }
-  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>

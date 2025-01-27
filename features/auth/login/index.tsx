@@ -1,31 +1,25 @@
 import React, { useState } from "react";
-import { Alert, Button, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Button,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
 import { Colors } from "@/constants";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, useRouter } from "expo-router";
-import { loginUser } from "../firebase/auth";
+import { Link } from "expo-router";
 import { Formik } from "formik";
 import { validationSchema } from "./validationSchema";
-import { initialUserCredentials, UserCredentials } from "../types";
+import { initialUserCredentials } from "../types";
+import useLogin from "../hooks/useLogin";
 
 export default function LoginScreen() {
-  const router = useRouter();
+  const { handleLogin } = useLogin();
 
-  const handleLogin = async (userCredentials: UserCredentials) => {
-    try {
-      const user = await loginUser(
-        userCredentials.email,
-        userCredentials.password
-      );
-      Alert.alert('Login Successfully!', 'You have successfully logged in.');
-  
-      router.push("/(tabs)/profile");
-    } catch (error: any) {
-      Alert.alert('Failed login!', 'Please verify your credentials.');
-    }
-  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
