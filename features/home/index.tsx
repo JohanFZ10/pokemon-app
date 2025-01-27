@@ -5,20 +5,25 @@ import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import PokemonCard from "./components/PokemonCard";
 import PokemonModal from "./components/PokemonModal";
 import { Pokemon, PokemonDetails } from "./models";
-import { getPokemonDetailsFromApi, getPokemonsFromApi } from "./api/pokemonApi.service";
+import {
+  getPokemonDetailsFromApi,
+  getPokemonsFromApi,
+} from "./api/pokemonApi.service";
 import { sortElements } from "@/utils";
 
 export default function HomeScreen() {
   const [pokemonDetails, setPokemonDetails] = useState<PokemonDetails>();
-  const [pokemonsNotFavorites, setPokemonsNotFavorites] = useState<Pokemon[]>([]);
+  const [pokemonsNotFavorites, setPokemonsNotFavorites] = useState<Pokemon[]>(
+    []
+  );
   const [pokemonsFavorites, setPokemonsFavorites] = useState<Pokemon[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showPokemonModal, setShowPokemonModal] = useState(false);
 
-  const handleGetPokemonDetails = async (url:string) => {
+  const handleGetPokemonDetails = async (url: string) => {
     try {
       const details = await getPokemonDetailsFromApi(url);
-      setPokemonDetails(details); 
+      setPokemonDetails(details);
       setShowPokemonModal(true);
     } catch (error) {
       console.error("Error to getPokemonDetailsFromApi:", error);
@@ -28,15 +33,21 @@ export default function HomeScreen() {
     setShowPokemonModal(false);
   };
 
-  const handleToggleFavorite  = (pokemon: Pokemon) =>{
-    if(pokemonsFavorites.some((pokemonFav) => pokemonFav.name === pokemon.name)){
+  const handleToggleFavorite = (pokemon: Pokemon) => {
+    if (
+      pokemonsFavorites.some((pokemonFav) => pokemonFav.name === pokemon.name)
+    ) {
       setPokemonsNotFavorites((prev) => [...prev, pokemon]);
-      setPokemonsFavorites((prev) => prev.filter((pokemonFav) => pokemonFav.name !==  pokemon.name));
-    }else{
+      setPokemonsFavorites((prev) =>
+        prev.filter((pokemonFav) => pokemonFav.name !== pokemon.name)
+      );
+    } else {
       setPokemonsFavorites((prev) => [...prev, pokemon]);
-      setPokemonsNotFavorites((prev) => prev.filter((pokemonNotFav) => pokemonNotFav.name!==  pokemon.name));
+      setPokemonsNotFavorites((prev) =>
+        prev.filter((pokemonNotFav) => pokemonNotFav.name !== pokemon.name)
+      );
     }
-  }
+  };
   useEffect(() => {
     const fetchPokemons = async () => {
       try {
@@ -60,15 +71,13 @@ export default function HomeScreen() {
           <ActivityIndicator />
         ) : (
           <FlatList
-            data={pokemonsNotFavorites}
+            data={sortElements(pokemonsNotFavorites, false)}
             renderItem={({ item }) => (
               <PokemonCard
                 name={item.name}
-                url={
-                  item.url
-                }
+                url={item.url}
                 onPokemonSelect={handleGetPokemonDetails}
-                onFavoriteToggle={() => handleToggleFavorite(item)} 
+                onFavoriteToggle={() => handleToggleFavorite(item)}
                 isFavorite={false}
               />
             )}
@@ -80,15 +89,13 @@ export default function HomeScreen() {
       <View style={styles.containerFavorites}>
         <Text style={styles.title}>Favorites Pokemons </Text>
         <FlatList
-          data={pokemonsFavorites}
+          data={sortElements(pokemonsFavorites, false)}
           renderItem={({ item }) => (
             <PokemonCard
               name={item.name}
-              url={
-                item.url
-              }
+              url={item.url}
               onPokemonSelect={handleGetPokemonDetails}
-              onFavoriteToggle={() => handleToggleFavorite(item)} 
+              onFavoriteToggle={() => handleToggleFavorite(item)}
               isFavorite={true}
             />
           )}
@@ -97,7 +104,13 @@ export default function HomeScreen() {
           horizontal
         />
       </View>
-      {pokemonDetails && <PokemonModal visible={showPokemonModal} modalData = {pokemonDetails} onClose = {handleCloseModal}/>}
+      {pokemonDetails && (
+        <PokemonModal
+          visible={showPokemonModal}
+          modalData={pokemonDetails}
+          onClose={handleCloseModal}
+        />
+      )}
     </SafeAreaView>
   );
 }
