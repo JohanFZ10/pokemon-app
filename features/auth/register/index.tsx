@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Button, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Button,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
 import { Colors } from "@/constants";
@@ -11,7 +18,6 @@ import { Formik } from "formik";
 import { validationSchema } from "./validationSchema";
 
 export default function RegisterScreen() {
-  const [message, setMessage] = useState("");
   const router = useRouter();
 
   const handleRegister = async (userCredentials: UserCredentials) => {
@@ -20,10 +26,10 @@ export default function RegisterScreen() {
         userCredentials.email,
         userCredentials.password
       );
-      setMessage(`Usuario registrado: ${user.email}`);
-      router.push("/home"); 
+      Alert.alert('Register Successfully!', 'You have successfully sign up.');
+      router.push("/(tabs)/profile");
     } catch (error: any) {
-      setMessage(error.message);
+      Alert.alert(error.message);
     }
   };
   return (
@@ -47,7 +53,9 @@ export default function RegisterScreen() {
               keyboardType="email-address"
               placeholderTextColor="#aaa"
             />
-            {touched.email && errors.email && <Text style = {styles.errorText}>{errors.email}</Text>}
+            {touched.email && errors.email && (
+              <Text style={styles.errorText}>{errors.email}</Text>
+            )}
 
             <TextInput
               style={styles.textInput}
@@ -58,7 +66,7 @@ export default function RegisterScreen() {
               placeholderTextColor="#aaa"
             />
             {touched.password && errors.password && (
-              <Text style = {styles.errorText}>{errors.password}</Text>
+              <Text style={styles.errorText}>{errors.password}</Text>
             )}
 
             <TextInput
@@ -70,7 +78,7 @@ export default function RegisterScreen() {
               placeholderTextColor="#aaa"
             />
             {touched.repeatPassword && errors.repeatPassword && (
-              <Text style = {styles.errorText}>{errors.repeatPassword}</Text>
+              <Text style={styles.errorText}>{errors.repeatPassword}</Text>
             )}
 
             <Button
@@ -78,7 +86,6 @@ export default function RegisterScreen() {
               color={Colors.lightBlue.background}
               onPress={handleSubmit}
             />
-            {message ? <Text style={styles.linkText}>{message}</Text> : null}
             <Link style={styles.linkText} href="/">
               Already have an account? Sign in!
             </Link>

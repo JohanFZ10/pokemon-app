@@ -11,10 +11,10 @@ export default function ProfileScreen() {
   const handleLogout = async () => {
     try {
       await logoutUser();
-      Alert.alert('Sesión cerrada', 'Has cerrado sesión correctamente.');
+      Alert.alert('Closed session', 'You have successfully logged out.');
       router.push('/sign-up');
     } catch (error) {
-      Alert.alert('Error', 'Hubo un problema al cerrar sesión.');
+      Alert.alert('Closed session error', 'There was a problem logging out.');
     }
   };
 

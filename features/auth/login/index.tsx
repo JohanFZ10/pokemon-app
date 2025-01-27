@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Button, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
 import { Colors } from "@/constants";
@@ -11,7 +11,6 @@ import { validationSchema } from "./validationSchema";
 import { initialUserCredentials, UserCredentials } from "../types";
 
 export default function LoginScreen() {
-  const [message, setMessage] = useState("");
   const router = useRouter();
 
   const handleLogin = async (userCredentials: UserCredentials) => {
@@ -20,10 +19,11 @@ export default function LoginScreen() {
         userCredentials.email,
         userCredentials.password
       );
-      setMessage(`Bienvenido: ${user.email}`);
+      Alert.alert('Login Successfully!', 'You have successfully logged in.');
+  
       router.push("/(tabs)/profile");
     } catch (error: any) {
-      setMessage(error.message);
+      Alert.alert('Failed login!', 'Please verify your credentials.');
     }
   };
   return (
@@ -67,8 +67,6 @@ export default function LoginScreen() {
               color={Colors.lightBlue.background}
               onPress={handleSubmit}
             />
-            {message ? <Text style={styles.linkText}>{message}</Text> : null}
-
             <Link style={styles.linkText} href="/sign-up">
               Create an account!
             </Link>
