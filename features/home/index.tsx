@@ -6,25 +6,12 @@ import PokemonCard from "./components/PokemonCard";
 import PokemonModal from "./components/PokemonModal";
 import { Pokemon, PokemonDetails } from "./models";
 import { getPokemonDetailsFromApi, getPokemonsFromApi } from "./api/pokemonApi.service";
-
-const pokemonsFavorites = [
-  { name: "Pikachu", image: "pikachu.png" },
-  { name: "Charmander", image: "charmander.png" },
-  { name: "Squirtle", image: "squirtle.png" },
-  { name: "Bulbasaur", image: "bulbasaur.png" },
-];
-const pokemonsNotFavorites = [
-  { name: "Caterpie", image: "caterpie.png" },
-  { name: "Pidgey", image: "pidgey.png" },
-  { name: "Rattata", image: "rattata.png" },
-  { name: "Spearow", image: "spearow.png" },
-  { name: "Spearow", image: "spearow.png" },
-  { name: "Spearow", image: "spearow.png" },
-];
+import { sortElements } from "@/utils";
 
 export default function HomeScreen() {
-  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [pokemonDetails, setPokemonDetails] = useState<PokemonDetails>();
+  const [pokemonsNotFavorites, setPokemonsNotFavorites] = useState<Pokemon[]>([]);
+  const [pokemonsFavorites, setPokemonsFavorites] = useState<Pokemon[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showPokemonModal, setShowPokemonModal] = useState(false);
 
@@ -41,11 +28,20 @@ export default function HomeScreen() {
     setShowPokemonModal(false);
   };
 
+  const handleToggleFavorite  = (pokemon: Pokemon) =>{
+    if(pokemonsFavorites.some((pokemonFav) => pokemonFav.name === pokemon.name)){
+      setPokemonsNotFavorites((prev) => [...prev, pokemon]);
+      setPokemonsFavorites((prev) => prev.filter((pokemonFav) => pokemonFav.name !==  pokemon.name));
+    }else{
+      setPokemonsFavorites((prev) => [...prev, pokemon]);
+      setPokemonsNotFavorites((prev) => prev.filter((pokemonNotFav) => pokemonNotFav.name!==  pokemon.name));
+    }
+  }
   useEffect(() => {
     const fetchPokemons = async () => {
       try {
         const fetchedPokemons = await getPokemonsFromApi();
-        setPokemons(fetchedPokemons);
+        setPokemonsNotFavorites(fetchedPokemons);
       } catch (error) {
         console.error("Failed to fetch pokemons:", error);
       } finally {
@@ -59,12 +55,12 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.containerNotFavorites}>
-        <Text style={styles.title}>Pokemons Not Favorites</Text>
+        <Text style={styles.title}>Not Favorites Pokemons</Text>
         {isLoading ? (
           <ActivityIndicator />
         ) : (
           <FlatList
-            data={pokemons}
+            data={pokemonsNotFavorites}
             renderItem={({ item }) => (
               <PokemonCard
                 name={item.name}
@@ -72,6 +68,8 @@ export default function HomeScreen() {
                   item.url
                 }
                 onPokemonSelect={handleGetPokemonDetails}
+                onFavoriteToggle={() => handleToggleFavorite(item)} 
+                isFavorite={false}
               />
             )}
             keyExtractor={(item, index) => index.toString()}
@@ -80,7 +78,7 @@ export default function HomeScreen() {
         )}
       </View>
       <View style={styles.containerFavorites}>
-        <Text style={styles.title}>Pokemons Favorites</Text>
+        <Text style={styles.title}>Favorites Pokemons </Text>
         <FlatList
           data={pokemonsFavorites}
           renderItem={({ item }) => (
@@ -90,6 +88,8 @@ export default function HomeScreen() {
                 item.url
               }
               onPokemonSelect={handleGetPokemonDetails}
+              onFavoriteToggle={() => handleToggleFavorite(item)} 
+              isFavorite={true}
             />
           )}
           keyExtractor={(item, index) => index.toString()}

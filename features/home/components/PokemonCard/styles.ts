@@ -26,4 +26,7 @@ export const styles = StyleSheet.create({
       fontWeight: "500",
       color: "#333",
     },
+    favoriteIcon: {
+      marginLeft: 10,
+    },
   });

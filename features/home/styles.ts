@@ -39,6 +39,6 @@ export const styles = StyleSheet.create({
     color: "#333",
   },
   flatListContent: {
-    paddingHorizontal: 10, // Espacio lateral dentro del FlatList
+    paddingHorizontal: 10, 
   },
 });
